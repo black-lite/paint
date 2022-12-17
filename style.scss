@@ -1,6 +1,15 @@
 * { margin: 0; padding: 0; }
 
-body > div {
-	border: 1px solid black;
-	border-radius: 1px;
+body {
+	> canvas { border: 1px solid black; }
+	> #size { position: absolute; background-color: blue; cursor: move; }
+	> input {
+		position: absolute; top: 0; left: 0; display: inline-block; width: 100px; height: 30px;
+		&[type="color"] {}
+		&[type="range"] { top: 40px; left: 0; }
+	}
+	> select {
+		position: absolute; top: 70px; left: 0; display: inline-block; width: 100px; height: 30px;
+	}
+
 }
