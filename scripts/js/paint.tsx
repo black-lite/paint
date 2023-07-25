@@ -1,4 +1,3 @@
-import TriggeredEvent = JQuery.TriggeredEvent;
 
 const WIDTH = 50;
 const HEIGHT = 50;
@@ -21,7 +20,8 @@ class Painter {
 	protected isDrawing: boolean;
 	protected isResize: boolean;
 
-	public constructor() {
+	public constructor()
+	{
 		this.container = $('body');
 		this.figure = figures.none;
 
@@ -51,8 +51,10 @@ class Painter {
 
 	protected changeColor(color: string) : void { this.color = color; }
 	protected changeSize(size: number) : void { this.size = size; }
-	protected changeFigure(figure: number) : void {
-		switch (figure) {
+	protected changeFigure(figure: number) : void
+	{
+		switch (figure)
+		{
 			case figures.none: this.figure = 0; break;
 			case figures.square: this.figure = 1; break;
 			case figures.triangle: this.figure = 2; break;
@@ -68,7 +70,7 @@ class Painter {
 	protected stopResize() : void { this.isResize = false; }
 
 
-	protected resize(event: TriggeredEvent) : void
+	protected resize(event) : void
 	{
 		if (!this.isResize) return;
 
@@ -79,7 +81,7 @@ class Painter {
 		this.sizer.css('left', this.canvas.attr('width') + 'px');
 	}
 
-	protected draw(event: TriggeredEvent) : void
+	protected draw(event) : void
 	{
 		if (!this.isDrawing) return;
 
@@ -90,7 +92,7 @@ class Painter {
 		this.ctx.stroke();
 	}
 
-	protected startDrawing(e: TriggeredEvent) : void
+	protected startDrawing(e) : void
 	{
 	    if (!this.canvas) return;
 		this.isDrawing = true;

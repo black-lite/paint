@@ -1,0 +1,35 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body > canvas {
+  border: 1px solid black;
+}
+body > #size {
+  position: absolute;
+  background-color: blue;
+  cursor: move;
+}
+body > input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+}
+body > input[type=range] {
+  top: 40px;
+  left: 0;
+}
+body > select {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+}
+
+/*# sourceMappingURL=style.css.map */
