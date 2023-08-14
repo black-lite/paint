@@ -1,40 +1,30 @@
 * { margin: 0; padding: 0; }
 
-body {
-	> canvas {
-		border: 1px solid black;
+canvas { border: 1px solid black; }
+
+#size { position: absolute; background-color: blue; cursor: move; }
+
+#layers {
+	position: absolute; background-color: #7878ff;
+
+	> a.add {
+		padding: 5px; background-color: #00b5ec; color: #ffffff; cursor: pointer;
+		&:hover { background-color: #0097c4; }
 	}
 
-	> #size {
-		position: absolute;
-		background-color: blue;
-		cursor: move;
-	}
-
-	> input {
-		position: absolute;
-		top: 0;
-		left: 0;
-		display: inline-block;
-		width: 100px;
-		height: 30px;
-
-		&[type="color"] {
-		}
-
-		&[type="range"] {
-			top: 40px;
-			left: 0;
+	> div.layers {
+		> div {
+			padding: 5px;
+			&.act { background-color: #008d35; }
 		}
 	}
-
-	> select {
-		position: absolute;
-		top: 70px;
-		left: 0;
-		display: inline-block;
-		width: 100px;
-		height: 30px;
-	}
-
 }
+
+input {
+	position: absolute; top: 0; left: 1000px; display: inline-block; width: 100px; height: 30px;
+
+	&[type="color"] { }
+	&[type="range"] { top: 40px; }
+}
+
+select { position: absolute; top: 70px; left: 1000px; display: inline-block; width: 100px; height: 30px; }

@@ -1,29 +1,31 @@
-
+/// <reference path="layers.tsx" />
 const WIDTH = 50;
 const HEIGHT = 50;
 
 enum figures {none, square,triangle}
 
-class Painter {
-
-	protected container: JQuery;
-	protected canvas: JQuery<HTMLCanvasElement & HTMLElement>;
-	protected ctx: CanvasRenderingContext2D;
+class Painter
+{
 	protected sizer: JQuery;
+	protected container: JQuery;
+	protected ctx: CanvasRenderingContext2D;
+	protected canvas: JQuery<HTMLCanvasElement & HTMLElement>;
 
-	protected color: string;
 	protected size: number;
+	protected color: string;
 	protected figure: number;
 
 	protected startPos : { x: number, y: number };
 
-	protected isDrawing: boolean;
 	protected isResize: boolean;
+	protected isDrawing: boolean;
+	protected activeLayer: Layer;
 
 	public constructor()
 	{
 		this.container = $('body');
 		this.figure = figures.none;
+		this.color = $('input#color').val().toString();
 
 		this.canvas = this.container.find('canvas');
 		this.ctx = this.canvas[0].getContext('2d');
@@ -43,15 +45,21 @@ class Painter {
 		this.sizer.on('mouseout', () => this.stopResize());
 		this.sizer.on('mousemove', (e) => this.resize(e));
 
+		this.canvas.on('mousewheel', (e) => this.scale(e));
+
 		this.canvas.on('mousedown', (e) => this.startDrawing(e));
 		this.canvas.on('mouseup', () => this.stopDrawing());
-		this.canvas.on('mouseout', () => this.stopDrawing());
+		this.canvas.on('mouseout', () => { if (!this.isDrawing) return; this.stopDrawing()});
 		this.canvas.on('mousemove', (e) => this.draw(e));
+
+		this.activeLayer = L.create();
+		$('body > div#layers > a.add').on('click', () => this.newLayer())
 	}
 
-	protected changeColor(color: string) : void { this.color = color; }
-	protected changeSize(size: number) : void { this.size = size; }
-	protected changeFigure(figure: number) : void
+	protected changeSize(size: number) 		: void { this.size = size; }
+	protected changeColor(color: string)	: void { this.color = color; }
+
+	protected changeFigure(figure: number)	: void
 	{
 		switch (figure)
 		{
@@ -61,14 +69,19 @@ class Painter {
 		}
 	}
 
-	protected startResize(event) : void
+	protected scale(event) : void
 	{
 		this.isResize = true;
 		this.startPos = {x: event.clientX, y: event.clientY};
-		console.log(this.startPos);
 	}
-	protected stopResize() : void { this.isResize = false; }
 
+	protected startResize(event) : void
+	{
+		this.isResize = true;
+		this.startPos = { x: event.clientX, y: event.clientY };
+	}
+
+	protected stopResize() : void { this.isResize = false; }
 
 	protected resize(event) : void
 	{
@@ -85,11 +98,18 @@ class Painter {
 	{
 		if (!this.isDrawing) return;
 
-		let x = event.clientX;
-		let y = event.clientY;
+		const x = event.clientX;
+		const y = event.clientY;
+
+		this.activeLayer.fillPixel(x, y, this.color);
 
 		this.ctx.lineTo(x, y);
 		this.ctx.stroke();
+	}
+
+	protected newLayer()
+	{
+		this.activeLayer = L.create();
 	}
 
 	protected startDrawing(e) : void
@@ -108,5 +128,9 @@ class Painter {
 		this.ctx.moveTo(e.pageX - offset.left, e.pageY - offset.top);
 	}
 
-	protected stopDrawing() : void { this.isDrawing = false; }
+	protected stopDrawing() : void
+	{
+		this.isDrawing = false;
+		console.log(this.activeLayer);
+	}
 }

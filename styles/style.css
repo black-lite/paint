@@ -3,30 +3,52 @@
   padding: 0;
 }
 
-body > canvas {
+canvas {
   border: 1px solid black;
 }
-body > #size {
+
+#size {
   position: absolute;
   background-color: blue;
   cursor: move;
 }
-body > input {
+
+#layers {
+  position: absolute;
+  background-color: #7878ff;
+}
+#layers > a.add {
+  padding: 5px;
+  background-color: #00b5ec;
+  color: #ffffff;
+  cursor: pointer;
+}
+#layers > a.add:hover {
+  background-color: #0097c4;
+}
+#layers > div.layers > div {
+  padding: 5px;
+}
+#layers > div.layers > div.act {
+  background-color: #008d35;
+}
+
+input {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 1000px;
   display: inline-block;
   width: 100px;
   height: 30px;
 }
-body > input[type=range] {
+input[type=range] {
   top: 40px;
-  left: 0;
 }
-body > select {
+
+select {
   position: absolute;
   top: 70px;
-  left: 0;
+  left: 1000px;
   display: inline-block;
   width: 100px;
   height: 30px;

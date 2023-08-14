@@ -8,7 +8,7 @@
 		<link rel="stylesheet" href="styles/style.css">
 	</head>
 	<body>
-		<input id="color" type="color"/>
+		<input id="color" type="color" value="#000000"/>
 		<input id="radius" type="range" min="1" max="100" step="5"/>
 		<select id="figures">
 			<option value="0">не выбрано</option>
@@ -17,6 +17,10 @@
 		</select>
 		<canvas width="1000" height="700"></canvas>
 		<div id="size"></div>
+		<div id="layers">
+			<a class="add">Добавить</a>
+			<div class="layers"></div>
+		</div>
 	</body>
 	<script>new Painter();</script>
 </html>
