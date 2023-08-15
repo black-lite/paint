@@ -8,7 +8,7 @@ canvas { border: 1px solid black; }
 	position: absolute; background-color: #7878ff;
 
 	> a.add {
-		padding: 5px; background-color: #00b5ec; color: #ffffff; cursor: pointer;
+		display: inline-block; padding: 5px; background-color: #00b5ec; color: #ffffff; cursor: pointer;
 		&:hover { background-color: #0097c4; }
 	}
 
@@ -17,6 +17,7 @@ canvas { border: 1px solid black; }
 			padding: 5px;
 			&.act { background-color: #008d35; }
 		}
+		> div.between { background-color: #de4bf8; height: 10px; }
 	}
 }
 

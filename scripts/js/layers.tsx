@@ -32,22 +32,30 @@ class Layers
 		this.id++;
 		let layer = new Layer();
 
-		$('body > div#layers > div.layers > div').removeClass();
-		let item = (<div class="act" click={() =>
-			{
-				const layers = $('body > div#layers > div.layers > div').removeClass();
+		$('body > div#layers > div.layers > div').removeClass('act');
+		let item = $(<div class="act" draggable="true">{this.id}</div>).prependTo($('body > div#layers > div.layers'));
+		// $(<div class="between"/>).after(item);
+		// $(<div class="between"/>).before(item);
 
-				const data = this.layersStack.get(this.id);
-				if (data)
-				{
-					layers.removeClass();
-					item.toggleClass('act');
-					for (const [key, value] of this.layersStack) value.layer.off()
-					data.layer.on();
-					console.log(layer);
-				}
+		item.after(<div class="between"/>);
+		item.before(<div class="between"/>);
+
+		item.on('click', () => {
+			const layers = $('body > div#layers > div.layers > div').removeClass('act');
+
+			const data = this.layersStack.get(this.id);
+			if (data)
+			{
+				layers.removeClass('act');
+				item.toggleClass('act');
+				for (const [key, value] of this.layersStack) value.layer.off()
+				data.layer.on();
 			}
-		}>{this.id}</div>).prependTo($('body > div#layers > div.layers'));
+		})
+
+		item.on('dragstart', (e) => {
+			console.log(e);
+		})
 
 		this.layersStack.set(this.id, {item: item, layer: layer});
 

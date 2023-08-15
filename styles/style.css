@@ -18,6 +18,7 @@ canvas {
   background-color: #7878ff;
 }
 #layers > a.add {
+  display: inline-block;
   padding: 5px;
   background-color: #00b5ec;
   color: #ffffff;
@@ -31,6 +32,10 @@ canvas {
 }
 #layers > div.layers > div.act {
   background-color: #008d35;
+}
+#layers > div.layers > div.between {
+  background-color: #de4bf8;
+  height: 10px;
 }
 
 input {
