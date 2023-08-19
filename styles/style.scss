@@ -14,10 +14,9 @@ canvas { border: 1px solid black; }
 
 	> div.layers {
 		> div {
-			padding: 5px;
+			padding: 10px 5px;
 			&.act { background-color: #008d35; }
 		}
-		> div.between { background-color: #de4bf8; height: 10px; }
 	}
 }
 

@@ -28,14 +28,10 @@ canvas {
   background-color: #0097c4;
 }
 #layers > div.layers > div {
-  padding: 5px;
+  padding: 10px 5px;
 }
 #layers > div.layers > div.act {
   background-color: #008d35;
-}
-#layers > div.layers > div.between {
-  background-color: #de4bf8;
-  height: 10px;
 }
 
 input {

@@ -1,6 +1,6 @@
 class Layer
 {
-	protected isActive 	: boolean;
+	public isActive 	: boolean;
 	protected pixels 	: Map<{ x: number, y: number }, string>;
 
 	constructor()
@@ -22,25 +22,26 @@ class Layer
 
 class Layers
 {
-	protected id 			: number = 0;
-	protected layersStack 	: Map<number, { item: JQuery, layer: Layer }> = new Map();
+	protected id 			: number;
+	protected container 	: JQuery;
+	protected layersStack 	: Map<number, { item: JQuery, layer: Layer }>;
 
-	public constructor() { }
+	public constructor()
+	{
+		this.id = 0;
+		this.layersStack = new Map();
+	}
 
 	public create() : Layer
 	{
 		this.id++;
-		let layer = new Layer();
+		const container = $('body > div#layers > div.layers');
+		container.find('> div').removeClass('act');
 
-		$('body > div#layers > div.layers > div').removeClass('act');
-		let item = $(<div class="act" draggable="true">{this.id}</div>).prependTo($('body > div#layers > div.layers'));
-		// $(<div class="between"/>).after(item);
-		// $(<div class="between"/>).before(item);
+		let item = $(<div class="act" draggable="true">{this.id}</div>).prependTo(container);
 
-		item.after(<div class="between"/>);
-		item.before(<div class="between"/>);
-
-		item.on('click', () => {
+		item.on('click', () =>
+		{
 			const layers = $('body > div#layers > div.layers > div').removeClass('act');
 
 			const data = this.layersStack.get(this.id);
@@ -48,18 +49,21 @@ class Layers
 			{
 				layers.removeClass('act');
 				item.toggleClass('act');
-				for (const [key, value] of this.layersStack) value.layer.off()
+				for (const [key, value] of this.layersStack) value.layer.off();
 				data.layer.on();
 			}
 		})
 
-		item.on('dragstart', (e) => {
-			console.log(e);
+		const layer = new Layer();
+
+		item.on('dragstart', (e) =>
+		{
+			if (!layer.isActive) return;
+			console.log(layer.isActive);
 		})
+		layer.on();
 
 		this.layersStack.set(this.id, {item: item, layer: layer});
-
-		layer.on();
 		return layer;
 	}
 }
