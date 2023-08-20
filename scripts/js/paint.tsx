@@ -72,7 +72,7 @@ class Painter
 	protected scale(event) : void
 	{
 		this.isResize = true;
-		this.startPos = {x: event.clientX, y: event.clientY};
+		this.startPos = { x: event.clientX, y: event.clientY };
 	}
 
 	protected startResize(event) : void
@@ -87,8 +87,8 @@ class Painter
 	{
 		if (!this.isResize) return;
 
-		$(this.canvas).attr('width', event.clientX - WIDTH/2);
-		$(this.canvas).attr('height', event.clientY - HEIGHT/2);
+		$(this.canvas).attr('width', event.clientX - WIDTH / 2);
+		$(this.canvas).attr('height', event.clientY - HEIGHT / 2);
 
 		this.sizer.css('top', this.canvas.attr('height') + 'px');
 		this.sizer.css('left', this.canvas.attr('width') + 'px');
@@ -101,7 +101,7 @@ class Painter
 		const x = event.clientX;
 		const y = event.clientY;
 
-		this.activeLayer.fillPixel(x, y, this.color);
+		/*if (!this.activeLayer) */this.activeLayer.fillPixel(x, y, this.color);
 
 		this.ctx.lineTo(x, y);
 		this.ctx.stroke();
@@ -118,19 +118,15 @@ class Painter
 		this.isDrawing = true;
 
         this.ctx.beginPath();
-        // if (this.figure == figures.none) {
-        //
-		// }
-		this.ctx.strokeStyle = this.color;
-		this.ctx.lineWidth = this.size;
 		this.ctx.lineCap = 'round';
-		let offset = this.canvas.offset();
+		this.ctx.lineWidth = this.size;
+		this.ctx.strokeStyle = this.color;
+		const offset = this.canvas.offset();
 		this.ctx.moveTo(e.pageX - offset.left, e.pageY - offset.top);
 	}
 
 	protected stopDrawing() : void
 	{
 		this.isDrawing = false;
-		console.log(this.activeLayer);
 	}
 }

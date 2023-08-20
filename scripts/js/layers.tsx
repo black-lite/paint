@@ -1,7 +1,7 @@
 class Layer
 {
 	public isActive 	: boolean;
-	protected pixels 	: Map<{ x: number, y: number }, string>;
+	protected pixels 	: Map<string, string>;
 
 	constructor()
 	{
@@ -13,11 +13,10 @@ class Layer
 
 	fillPixel(x: number, y: number, color: string) : void
 	{
-		if (this.pixels.has({ x: x, y: y })) this.pixels.set({ x: x, y: y }, color);
-		else this.pixels.set({ x: x, y: y }, color);
+		this.pixels.set(`${x}_${y}`, color);
 	}
 
-	public getPixels() : Map<{ x: number, y: number }, string> { return this.pixels; }
+	public getPixels() : Map<string, string> { return this.pixels; }
 }
 
 class Layers
