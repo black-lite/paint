@@ -29,9 +29,28 @@ canvas {
 }
 #layers > div.layers > div {
   padding: 10px 5px;
+  position: relative;
 }
 #layers > div.layers > div.act {
   background-color: #008d35;
+}
+#layers > div.layers > div > span {
+  position: absolute;
+  right: 0;
+  width: 30px;
+  text-align: center;
+  color: white;
+}
+#layers > div.layers > div > span:hover {
+  background-color: #bdffd5;
+}
+#layers > div.layers > div > span:first-child {
+  top: 0;
+  bottom: 50%;
+}
+#layers > div.layers > div > span:last-child {
+  top: 50%;
+  bottom: 0;
 }
 
 input {

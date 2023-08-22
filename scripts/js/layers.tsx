@@ -37,10 +37,11 @@ class Layers
 		const container = $('body > div#layers > div.layers');
 		container.find('> div').removeClass('act');
 
-		let item = $(<div class="act" draggable="true">{this.id}</div>).prependTo(container);
+		let item : JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{this.id}<span class="up">↑</span><span class="down">↓</span></div>).prependTo(container);
 
 		item.on('click', () =>
 		{
+			if (item.hasClass('act')) return;
 			const layers = $('body > div#layers > div.layers > div').removeClass('act');
 
 			const data = this.layersStack.get(this.id);
@@ -52,6 +53,27 @@ class Layers
 				data.layer.on();
 			}
 		})
+
+		item.find('span:first-of-type').on('click' , () =>
+		{
+			console.log(this.layersStack);
+			if (container.children().length == 1) return;
+
+			const prev = item.prev('div');
+			if (!prev.length) return;
+
+			prev.before(item);
+		});
+
+		item.find('span:last-of-type').on('click' , () =>
+		{
+			if (container.children().length == 1) return;
+
+			const next = item.next('div');
+			if (!next.length) return;
+
+			next.after(item);
+		});
 
 		const layer = new Layer();
 
