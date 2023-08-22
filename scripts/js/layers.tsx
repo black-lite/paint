@@ -54,9 +54,9 @@ class Layers
 			}
 		})
 
-		item.find('span:first-of-type').on('click' , () =>
+		item.find('span:first-of-type').on('click' , (e) =>
 		{
-			console.log(this.layersStack);
+			e.stopPropagation();
 			if (container.children().length == 1) return;
 
 			const prev = item.prev('div');
@@ -65,8 +65,9 @@ class Layers
 			prev.before(item);
 		});
 
-		item.find('span:last-of-type').on('click' , () =>
+		item.find('span:last-of-type').on('click' , (e) =>
 		{
+			e.stopPropagation();
 			if (container.children().length == 1) return;
 
 			const next = item.next('div');
