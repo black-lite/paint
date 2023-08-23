@@ -20,8 +20,8 @@ canvas { border: 1px solid black; }
 				position: absolute; right: 0; width: 30px; text-align: center; color: white;
 
 				&:hover { background-color: #bdffd5 }
-				&:first-child { top: 0; bottom: 50%; }
-				&:last-child { top: 50%; bottom: 0; }
+				&.up { top: 0; bottom: 50%; }
+				&.down { top: 50%; bottom: 0; }
 			}
 		}
 	}

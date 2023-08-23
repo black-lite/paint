@@ -1,17 +1,26 @@
 class Layer
 {
-	public isActive 	: boolean;
+	protected zIndex 	: number;
+	protected isActive 	: boolean;
+	protected parent 	: Layers;
 	protected pixels 	: Map<string, string>;
 
-	constructor()
+	constructor(zIndex: number)
 	{
+		this.zIndex = zIndex;
 		this.pixels = new Map();
 	}
 
-	on() { this.isActive = true; }
-	off() { this.isActive = false; }
+	public on() { this.isActive = true; }
+	public off() { this.isActive = false; }
 
-	fillPixel(x: number, y: number, color: string) : void
+	public increaseZIndex() : void { if (this.parent.getLayersStackSize() == this.zIndex) return; else this.zIndex++; }
+	public decreaseZIndex() : number { if (this.zIndex == 0 ) return; else this.zIndex--; }
+
+	public getZIndex() : number { return this.zIndex; }
+	public getIsActive() : boolean { return this.isActive; }
+
+	public fillPixel(x: number, y: number, color: string) : void
 	{
 		this.pixels.set(`${x}_${y}`, color);
 	}
@@ -31,13 +40,25 @@ class Layers
 		this.layersStack = new Map();
 	}
 
+	public getLayersStackSize() : number { return this.layersStack.size; }
+
 	public create() : Layer
 	{
 		this.id++;
 		const container = $('body > div#layers > div.layers');
 		container.find('> div').removeClass('act');
 
-		let item : JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{this.id}<span class="up">↑</span><span class="down">↓</span></div>).prependTo(container);
+		const layer: Layer = new Layer(this.id);
+
+		// item.on('dragstart', (e) =>
+		// {
+		// 	if (!layer.getIsActive()) return;
+		// 	console.log(layer.getIsActive());
+		// })
+
+		const item: JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{this.id}<span class="zIndex">({layer.getZIndex()})</span><span class="up">↑</span><span class="down">↓</span></div>).prependTo(container);
+
+		this.layersStack.set(this.id, {item: item, layer: layer});
 
 		item.on('click', () =>
 		{
@@ -54,48 +75,49 @@ class Layers
 			}
 		})
 
-		item.find('span:first-of-type').on('click' , (e) =>
+		item.find('span.up').on('click' , (e) =>
 		{
 			e.stopPropagation();
-			if (container.children().length == 1) return;
+			// if (container.children().length == 1) return;
 
 			const prev = item.prev('div');
 			if (!prev.length) return;
 
+			const layer = this.layersStack.get(this.id).layer;
+			layer.increaseZIndex();
+
+			item.find('span.zIndex').text(layer.getZIndex());
+
 			prev.before(item);
 		});
 
-		item.find('span:last-of-type').on('click' , (e) =>
+		item.find('span.down').on('click' , (e) =>
 		{
 			e.stopPropagation();
-			if (container.children().length == 1) return;
+			// if (container.children().length == 1) return;
 
 			const next = item.next('div');
 			if (!next.length) return;
 
+			const layer = this.layersStack.get(this.id).layer;
+			layer.decreaseZIndex();
+
+			item.find('span.zIndex').text(layer.getZIndex());
+
 			next.after(item);
 		});
 
-		const layer = new Layer();
-
-		item.on('dragstart', (e) =>
-		{
-			if (!layer.isActive) return;
-			console.log(layer.isActive);
-		})
 		layer.on();
-
-		this.layersStack.set(this.id, {item: item, layer: layer});
 		return layer;
 	}
 }
 
 var L = new Layers();
 
-function dec_to_bin(number: number) : string { return number.toString(2); }
-function bin_to_dec(number: string) : number { return parseInt(number,2); }
-function bin_to_hex(number: string) : string { return parseInt(number, 2).toString(16).toUpperCase(); }
-function hex_to_bin(number: string) : string
-{
-	return parseInt(number, 2).toString(16).toUpperCase();
-}
+// function dec_to_bin(number: number) : string { return number.toString(2); }
+// function bin_to_dec(number: string) : number { return parseInt(number,2); }
+// function bin_to_hex(number: string) : string { return parseInt(number, 2).toString(16).toUpperCase(); }
+// function hex_to_bin(number: string) : string
+// {
+// 	return parseInt(number, 2).toString(16).toUpperCase();
+// }

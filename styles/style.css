@@ -44,11 +44,11 @@ canvas {
 #layers > div.layers > div > span:hover {
   background-color: #bdffd5;
 }
-#layers > div.layers > div > span:first-child {
+#layers > div.layers > div > span.up {
   top: 0;
   bottom: 50%;
 }
-#layers > div.layers > div > span:last-child {
+#layers > div.layers > div > span.down {
   top: 50%;
   bottom: 0;
 }
