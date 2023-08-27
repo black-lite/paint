@@ -5,17 +5,18 @@ class Layer
 	protected parent 	: Layers;
 	protected pixels 	: Map<string, string>;
 
-	constructor(zIndex: number)
+	constructor(zIndex: number, parent: Layers)
 	{
+		this.parent = parent;
 		this.zIndex = zIndex;
 		this.pixels = new Map();
 	}
 
-	public on() { this.isActive = true; }
-	public off() { this.isActive = false; }
+	public activate() { this.isActive = true; }
+	public deactivate() { this.isActive = false; }
 
-	public increaseZIndex() : void { if (this.parent.getLayersStackSize() == this.zIndex) return; else this.zIndex++; }
-	public decreaseZIndex() : number { if (this.zIndex == 0 ) return; else this.zIndex--; }
+	public increaseZIndex() : void { if ((this.zIndex + 1) > this.parent.getLayersStackSize()) return; else this.zIndex++; }
+	public decreaseZIndex() : number { if (this.zIndex == 0) return; else this.zIndex--; }
 
 	public getZIndex() : number { return this.zIndex; }
 	public getIsActive() : boolean { return this.isActive; }
@@ -38,41 +39,23 @@ class Layers
 	{
 		this.id = 0;
 		this.layersStack = new Map();
+		this.container = $('body > div#layers > div.layers');
 	}
 
 	public getLayersStackSize() : number { return this.layersStack.size; }
 
 	public create() : Layer
 	{
-		this.id++;
-		const container = $('body > div#layers > div.layers');
-		container.find('> div').removeClass('act');
-
-		const layer: Layer = new Layer(this.id);
-
-		// item.on('dragstart', (e) =>
-		// {
-		// 	if (!layer.getIsActive()) return;
-		// 	console.log(layer.getIsActive());
-		// })
-
-		const item: JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{this.id}<span class="zIndex">({layer.getZIndex()})</span><span class="up">↑</span><span class="down">↓</span></div>).prependTo(container);
-
-		this.layersStack.set(this.id, {item: item, layer: layer});
+		const layer	: Layer = new Layer(this.id, this);
+		const item	: JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{this.id}<span class="zIndex">({layer.getZIndex()})</span><span class="up">↑</span><span class="down">↓</span></div>).prependTo(this.container);
+		this.layersStack.set(this.id, { item: item, layer: layer });
 
 		item.on('click', () =>
 		{
 			if (item.hasClass('act')) return;
-			const layers = $('body > div#layers > div.layers > div').removeClass('act');
 
 			const data = this.layersStack.get(this.id);
-			if (data)
-			{
-				layers.removeClass('act');
-				item.toggleClass('act');
-				for (const [key, value] of this.layersStack) value.layer.off();
-				data.layer.on();
-			}
+			if (data) { this.activateLayer(data.layer, item); }
 		})
 
 		item.find('span.up').on('click' , (e) =>
@@ -81,14 +64,16 @@ class Layers
 			// if (container.children().length == 1) return;
 
 			const prev = item.prev('div');
-			if (!prev.length) return;
-
-			const layer = this.layersStack.get(this.id).layer;
-			layer.increaseZIndex();
-
-			item.find('span.zIndex').text(layer.getZIndex());
-
-			prev.before(item);
+			if (prev.length)
+			{
+				const data = this.layersStack.get(this.id)
+				if (data)
+				{
+					data.layer.increaseZIndex();
+					item.find('span.zIndex').text(data.layer.getZIndex());
+					prev.before(item);
+				}
+			}
 		});
 
 		item.find('span.down').on('click' , (e) =>
@@ -97,22 +82,39 @@ class Layers
 			// if (container.children().length == 1) return;
 
 			const next = item.next('div');
-			if (!next.length) return;
+			if (next.length)
+			{
+				const data = this.layersStack.get(this.id);
 
-			const layer = this.layersStack.get(this.id).layer;
-			layer.decreaseZIndex();
-
-			item.find('span.zIndex').text(layer.getZIndex());
-
-			next.after(item);
+				if (data)
+				{
+					data.layer.decreaseZIndex();
+					item.find('span.zIndex').text(data.layer.getZIndex());
+					next.after(item);
+				}
+			}
 		});
 
-		layer.on();
+		this.id++;
+		this.activateLayer(layer, item);
 		return layer;
+	}
+
+	public activateLayer(layer: Layer, item: JQuery)
+	{
+		for (const [key, value] of this.layersStack)
+		{
+			value.item.removeClass('act');
+			value.layer.deactivate();
+		}
+
+		item.addClass('act');
+		layer.activate();
 	}
 }
 
-var L = new Layers();
+let L;
+$(() => L = new Layers());
 
 // function dec_to_bin(number: number) : string { return number.toString(2); }
 // function bin_to_dec(number: string) : number { return parseInt(number,2); }
