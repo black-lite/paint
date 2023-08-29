@@ -1,5 +1,7 @@
 class Layer
 {
+	protected static counter		: number = 0;
+	protected id 					: number;
 	protected zIndex 	: number;
 	protected isActive 	: boolean;
 	protected parent 	: Layers;
@@ -7,16 +9,18 @@ class Layer
 
 	constructor(zIndex: number, parent: Layers)
 	{
+		this.id = ++Layer.counter;
 		this.parent = parent;
 		this.zIndex = zIndex;
 		this.pixels = new Map();
 	}
 
+	public getID() : number { return this.id; }
 	public activate() { this.isActive = true; }
 	public deactivate() { this.isActive = false; }
 
-	public increaseZIndex() : void { if ((this.zIndex + 1) > this.parent.getLayersStackSize()) return; else this.zIndex++; }
-	public decreaseZIndex() : number { if (this.zIndex == 0) return; else this.zIndex--; }
+	public increaseZIndex() : number { if ((this.zIndex + 1) >= this.parent.getLayersStackSize()) return this.zIndex; return ++this.zIndex; }
+	public decreaseZIndex() : number { if (this.zIndex == 0) return this.zIndex; return --this.zIndex; }
 
 	public getZIndex() : number { return this.zIndex; }
 	public getIsActive() : boolean { return this.isActive; }
@@ -31,13 +35,11 @@ class Layer
 
 class Layers
 {
-	protected id 			: number;
-	protected container 	: JQuery;
-	protected layersStack 	: Map<number, { item: JQuery, layer: Layer }>;
+	protected container 			: JQuery;
+	protected layersStack 			: Map<number, { item: JQuery, layer: Layer }>;
 
 	public constructor()
 	{
-		this.id = 0;
 		this.layersStack = new Map();
 		this.container = $('body > div#layers > div.layers');
 	}
@@ -46,16 +48,14 @@ class Layers
 
 	public create() : Layer
 	{
-		const layer	: Layer = new Layer(this.id, this);
-		const item	: JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{this.id}<span class="zIndex">({layer.getZIndex()})</span><span class="up">↑</span><span class="down">↓</span></div>).prependTo(this.container);
-		this.layersStack.set(this.id, { item: item, layer: layer });
+		const layer	: Layer = new Layer(this.layersStack.size, this);
+		const item	: JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{layer.getID()}<span class="zIndex">({layer.getZIndex()})</span><span class="up">↑</span><span class="down">↓</span></div>).prependTo(this.container);
+		this.layersStack.set(layer.getID(), { item: item, layer: layer });
 
 		item.on('click', () =>
 		{
 			if (item.hasClass('act')) return;
-
-			const data = this.layersStack.get(this.id);
-			if (data) { this.activateLayer(data.layer, item); }
+			this.activateLayer(layer, item);
 		})
 
 		item.find('span.up').on('click' , (e) =>
@@ -66,13 +66,8 @@ class Layers
 			const prev = item.prev('div');
 			if (prev.length)
 			{
-				const data = this.layersStack.get(this.id)
-				if (data)
-				{
-					data.layer.increaseZIndex();
-					item.find('span.zIndex').text(data.layer.getZIndex());
-					prev.before(item);
-				}
+				item.find('span.zIndex').text(layer.increaseZIndex());
+				prev.before(item);
 			}
 		});
 
@@ -84,18 +79,11 @@ class Layers
 			const next = item.next('div');
 			if (next.length)
 			{
-				const data = this.layersStack.get(this.id);
-
-				if (data)
-				{
-					data.layer.decreaseZIndex();
-					item.find('span.zIndex').text(data.layer.getZIndex());
-					next.after(item);
-				}
+				item.find('span.zIndex').text(layer.decreaseZIndex());
+				next.after(item);
 			}
 		});
 
-		this.id++;
 		this.activateLayer(layer, item);
 		return layer;
 	}
