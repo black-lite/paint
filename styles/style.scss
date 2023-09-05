@@ -14,14 +14,17 @@ canvas { border: 1px solid black; }
 
 	> div.layers {
 		> div {
-			padding: 10px 5px; position: relative;
+			padding: 15px 5px; position: relative;
 			&.act { background-color: #008d35; }
+			> span.zIndex {  }
 			> span {
-				position: absolute; right: 0; width: 30px; text-align: center; color: white;
+				&.up, &.down {
+					position: absolute; right: 0; width: 35px; text-align: center; color: white;
 
-				&:hover { background-color: #bdffd5 }
-				&.up { top: 0; bottom: 50%; }
-				&.down { top: 50%; bottom: 0; }
+					&:hover { background-color: #03ad48; }
+					&.up { top: 0; bottom: 50%; }
+					&.down { top: 50%; bottom: 0; }
+				}
 			}
 		}
 	}

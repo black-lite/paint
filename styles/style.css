@@ -28,27 +28,27 @@ canvas {
   background-color: #0097c4;
 }
 #layers > div.layers > div {
-  padding: 10px 5px;
+  padding: 15px 5px;
   position: relative;
 }
 #layers > div.layers > div.act {
   background-color: #008d35;
 }
-#layers > div.layers > div > span {
+#layers > div.layers > div > span.up, #layers > div.layers > div > span.down {
   position: absolute;
   right: 0;
-  width: 30px;
+  width: 35px;
   text-align: center;
   color: white;
 }
-#layers > div.layers > div > span:hover {
-  background-color: #bdffd5;
+#layers > div.layers > div > span.up:hover, #layers > div.layers > div > span.down:hover {
+  background-color: #03ad48;
 }
-#layers > div.layers > div > span.up {
+#layers > div.layers > div > span.up.up, #layers > div.layers > div > span.down.up {
   top: 0;
   bottom: 50%;
 }
-#layers > div.layers > div > span.down {
+#layers > div.layers > div > span.up.down, #layers > div.layers > div > span.down.down {
   top: 50%;
   bottom: 0;
 }
