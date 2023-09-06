@@ -33,7 +33,7 @@ class Layer
 	public getPixels() : Map<string, string> { return this.pixels; }
 }
 
-class Layers
+/*class Layers
 {
 	protected container 			: JQuery;
 	protected layersStack 			: Map<number, { item: JQuery, layer: Layer }>;
@@ -96,6 +96,70 @@ class Layers
 			value.layer.deactivate();
 		}
 
+		item.addClass('act');
+		layer.activate();
+	}
+}*/
+
+class Layers
+{
+	protected container 			: JQuery;
+	protected layersStack 			: DataStructure.LinkedList<{id: number, item: JQuery, layer: Layer }>;
+	// protected layersStack 			: Map<number, { item: JQuery, layer: Layer }>;
+
+	public constructor()
+	{
+		this.layersStack = new DataStructure.LinkedList();
+		this.container = $('body > div#layers > div.layers');
+	}
+
+	public getLayersStackSize() : number { return this.layersStack.size(); }
+
+	public create() : Layer
+	{
+		const layer	: Layer = new Layer(this.layersStack.size(), this);
+		const item	: JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{layer.getID()}<span class="zIndex">({layer.getZIndex()})</span><span class="up">↑</span><span class="down">↓</span></div>).prependTo(this.container);
+		this.layersStack.append({id: layer.getID(), item: item, layer: layer });
+
+		item.on('click', () =>
+		{
+			if (item.hasClass('act')) return;
+			this.activateLayer(layer, item);
+		})
+
+		item.find('span.up').on('click' , (e) =>
+		{
+			e.stopPropagation();
+			// if (container.children().length == 1) return;
+
+			const prev = item.prev('div');
+			if (prev.length)
+			{
+				item.find('span.zIndex').text(layer.increaseZIndex());
+				prev.before(item);
+			}
+		});
+
+		item.find('span.down').on('click' , (e) =>
+		{
+			e.stopPropagation();
+			// if (container.children().length == 1) return;
+
+			const next = item.next('div');
+			if (next.length)
+			{
+				item.find('span.zIndex').text(layer.decreaseZIndex());
+				next.after(item);
+			}
+		});
+
+		this.activateLayer(layer, item);
+		return layer;
+	}
+
+	public activateLayer(layer: Layer, item: JQuery)
+	{
+		this.layersStack.forEach(data => { data.item.removeClass('act'); data.layer.deactivate(); });
 		item.addClass('act');
 		layer.activate();
 	}

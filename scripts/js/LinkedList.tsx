@@ -3,29 +3,34 @@ namespace DataStructure
 	class Node<T=string>
 	{
 		public data : T;
+		public prev : Node<T>;
 		public next : Node<T>;
 
-		public constructor(data: T, next: Node<T> = null)
+		public constructor(data: T, prev: Node<T> = null, next: Node<T> = null)
 		{
 			this.data = data;
+			this.prev = prev;
 			this.next = next;
 		}
 	}
 
-	class LinkedList<T=string>
+	export class LinkedList<T=string>
 	{
 		protected head: Node<T>;
 		protected tail: Node<T>;
+		protected _size: number;
 
 		public constructor()
 		{
 			this.head = null;
 			this.tail = null;
+			this._size = 0;
 		}
 
-		public append(data)
+		public append(data: T)
 		{
-			const node = new Node<T>(data);
+			this._size++;
+			const node = new Node<T>(data, this.tail, null);
 
 			if (this.tail) this.tail.next = node;
 			if (!this.head) this.head = node;
@@ -33,15 +38,16 @@ namespace DataStructure
 			this.tail = node;
 		}
 
-		public prepend(data)
+		public prepend(data: T)
 		{
-			const node = new Node(data, this.head);
+			this._size++;
+			const node = new Node(data, null, this.head);
 
 			this.head = node;
 			if (!this.tail) this.tail = node;
 		}
 
-		public find(data) : Node<T>
+		public find(data: T) : Node<T>
 		{
 			if (!this.head) return null;
 
@@ -55,8 +61,9 @@ namespace DataStructure
 			return null
 		}
 
-		public insertAfter(after, data) : boolean
+		public insertAfter(after: T, data: T) : boolean
 		{
+			this._size++;
 			const found = this.find(after);
 			if (!found) return false;
 
@@ -64,11 +71,16 @@ namespace DataStructure
 			return true;
 		}
 
-		public remove(data) : boolean
+		public remove(data: T) : boolean
 		{
+			this._size--;
 			if (!this.head) return null;
 
-			if (this.head && this.head.data === data) this.head = this.head.next;
+			if (this.head && this.head.data === data)
+			{
+				this.head = this.head.next;
+				this.head.prev = null;
+			}
 
 			let current: Node<T> = this.head;
 			while (current.next)
@@ -81,17 +93,43 @@ namespace DataStructure
 
 		public toArray() : Node<T>[]
 		{
-			const output = [];
+			const nodes = [];
 			let current: Node<T> = this.head;
 
 			while (current)
 			{
-				output.push(current);
+				nodes.push(current);
 				current = current.next;
 			}
-			return output
+			return nodes
 		}
+
+		public forEach(callback: (data: T) => void)
+		{
+			if (!callback || !this.head) return;
+			let current: Node<T> = this.head;
+
+			while (current)
+			{
+				callback(current.data);
+				current = current.next;
+			}
+		}
+
+		public size() : number { return this._size; }
 	}
 
 	const list = new LinkedList();
+
+	list.append('a');
+	list.append('b');
+	list.append('c');
+	list.append('d');
+	list.append('f');
+
+	list.forEach(function (data) { data = data + '***';
+		console.log(data);
+	});
+
+	console.log(list.size());
 }
