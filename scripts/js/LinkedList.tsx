@@ -43,6 +43,7 @@ namespace DataStructure
 			this._size++;
 			const node = new Node(data, null, this.head);
 
+			if (this.head) this.head.prev = node;
 			this.head = node;
 			if (!this.tail) this.tail = node;
 		}

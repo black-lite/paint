@@ -130,16 +130,7 @@ class Layers
 		item.find('span.up').on('click' , (e) =>
 		{
 			e.stopPropagation();
-			// if (container.children().length == 1) return;
 
-			// const prev = item.prev('div');
-			// if (prev.length)
-			// {
-			// 	item.find('span.zIndex').text(layer.increaseZIndex());
-			// 	prev.before(item);
-			// }
-
-			//
 			const data = {id: layer.getID(), item: item, layer};
 			const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
 			if (node && node.next)
@@ -159,14 +150,6 @@ class Layers
 		item.find('span.down').on('click' , (e) =>
 		{
 			e.stopPropagation();
-			// if (container.children().length == 1) return;
-
-			// const next = item.next('div');
-			// if (next.length)
-			// {
-			// 	item.find('span.zIndex').text(layer.decreaseZIndex());
-			// 	next.after(item);
-			// }
 
 			const data = {id: layer.getID(), item: item, layer};
 			const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
