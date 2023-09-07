@@ -132,12 +132,28 @@ class Layers
 			e.stopPropagation();
 			// if (container.children().length == 1) return;
 
-			const prev = item.prev('div');
-			if (prev.length)
+			// const prev = item.prev('div');
+			// if (prev.length)
+			// {
+			// 	item.find('span.zIndex').text(layer.increaseZIndex());
+			// 	prev.before(item);
+			// }
+
+			//
+			const data = {id: layer.getID(), item: item, layer};
+			const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
+			if (node && node.next)
 			{
-				item.find('span.zIndex').text(layer.increaseZIndex());
-				prev.before(item);
+				node.next.data.layer.decreaseZIndex();
+				node.next.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+				node.next.data.item.before(item);
+
+				node.data.layer.increaseZIndex();
+				node.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+
+				console.log(node.data.layer.getZIndex());
 			}
+
 		});
 
 		item.find('span.down').on('click' , (e) =>
@@ -145,11 +161,25 @@ class Layers
 			e.stopPropagation();
 			// if (container.children().length == 1) return;
 
-			const next = item.next('div');
-			if (next.length)
+			// const next = item.next('div');
+			// if (next.length)
+			// {
+			// 	item.find('span.zIndex').text(layer.decreaseZIndex());
+			// 	next.after(item);
+			// }
+
+			const data = {id: layer.getID(), item: item, layer};
+			const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
+			if (node && node.prev)
 			{
-				item.find('span.zIndex').text(layer.decreaseZIndex());
-				next.after(item);
+				node.prev.data.layer.increaseZIndex();
+				node.prev.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+				node.prev.data.item.after(item);
+
+				node.data.layer.decreaseZIndex();
+				node.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+
+				console.log(node.data.layer.getZIndex());
 			}
 		});
 
@@ -159,7 +189,7 @@ class Layers
 
 	public activateLayer(layer: Layer, item: JQuery)
 	{
-		this.layersStack.forEach(data => { data.item.removeClass('act'); data.layer.deactivate(); });
+		this.layersStack.forEach(data => { data.item.removeClass('act'); data.layer.deactivate(); return data; });
 		item.addClass('act');
 		layer.activate();
 	}

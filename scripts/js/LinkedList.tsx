@@ -47,7 +47,7 @@ namespace DataStructure
 			if (!this.tail) this.tail = node;
 		}
 
-		public find(data: T) : Node<T>
+		public find(data: T, equalFunc: (a: T, b: T) => boolean = null) : Node<T> | null
 		{
 			if (!this.head) return null;
 
@@ -55,7 +55,9 @@ namespace DataStructure
 
 			while (current)
 			{
-				if (current.data === data) return current;
+				if (equalFunc) { if (equalFunc(current.data, data)) return current; }
+				else { if (current.data === data) return current; }
+
 				current = current.next;
 			}
 			return null
@@ -104,14 +106,14 @@ namespace DataStructure
 			return nodes
 		}
 
-		public forEach(callback: (data: T) => void)
+		public forEach(callback: (data: T) => T)
 		{
 			if (!callback || !this.head) return;
 			let current: Node<T> = this.head;
 
 			while (current)
 			{
-				callback(current.data);
+				current.data = callback(current.data);
 				current = current.next;
 			}
 		}
@@ -127,9 +129,7 @@ namespace DataStructure
 	list.append('d');
 	list.append('f');
 
-	list.forEach(function (data) { data = data + '***';
-		console.log(data);
-	});
-
-	console.log(list.size());
+	console.log(list.toArray());
+	list.forEach(data => data + '***');
+	console.log(list.toArray());
 }
