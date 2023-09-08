@@ -30,9 +30,13 @@ canvas {
 #layers > div.layers > div {
   padding: 15px 5px;
   position: relative;
+  user-select: none;
 }
 #layers > div.layers > div.act {
   background-color: #008d35;
+}
+#layers > div.layers > div > span.zIndex {
+  user-select: none;
 }
 #layers > div.layers > div > span.up, #layers > div.layers > div > span.down {
   position: absolute;
@@ -40,6 +44,8 @@ canvas {
   width: 35px;
   text-align: center;
   color: white;
+  cursor: pointer;
+  user-select: none;
 }
 #layers > div.layers > div > span.up:hover, #layers > div.layers > div > span.down:hover {
   background-color: #03ad48;

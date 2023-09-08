@@ -14,12 +14,12 @@ canvas { border: 1px solid black; }
 
 	> div.layers {
 		> div {
-			padding: 15px 5px; position: relative;
+			padding: 15px 5px; position: relative; user-select: none;
 			&.act { background-color: #008d35; }
-			> span.zIndex {  }
+			> span.zIndex { user-select: none; }
 			> span {
 				&.up, &.down {
-					position: absolute; right: 0; width: 35px; text-align: center; color: white;
+					position: absolute; right: 0; width: 35px; text-align: center; color: white; cursor: pointer; user-select: none;
 
 					&:hover { background-color: #03ad48; }
 					&.up { top: 0; bottom: 50%; }

@@ -8,11 +8,11 @@ class Painter
 {
 	protected sizer: JQuery;
 	protected container: JQuery;
-	protected ctx: CanvasRenderingContext2D;
+	public static ctx: CanvasRenderingContext2D;
 	protected canvas: JQuery<HTMLCanvasElement & HTMLElement>;
 
 	protected size: number;
-	protected color: string;
+	public static color: string;
 	protected figure: number;
 
 	protected startPos : { x: number, y: number };
@@ -25,10 +25,10 @@ class Painter
 	{
 		this.container = $('body');
 		this.figure = figures.none;
-		this.color = $('input#color').val().toString();
+		Painter.color = $('input#color').val().toString();
 
 		this.canvas = this.container.find('canvas');
-		this.ctx = this.canvas[0].getContext('2d');
+		Painter.ctx = this.canvas[0].getContext('2d');
 		this.sizer = this.container.find('#size');
 
 		this.sizer.css('width', WIDTH);
@@ -57,7 +57,7 @@ class Painter
 	}
 
 	protected changeSize(size: number) 		: void { this.size = size; }
-	protected changeColor(color: string)	: void { this.color = color; }
+	protected changeColor(color: string)	: void { Painter.color = color; }
 
 	protected changeFigure(figure: number)	: void
 	{
@@ -101,10 +101,15 @@ class Painter
 		const x = event.clientX;
 		const y = event.clientY;
 
-		/*if (!this.activeLayer) */this.activeLayer.fillPixel(x, y, this.color);
+		/*if (!this.activeLayer) */this.activeLayer.fillPixel(x, y, Painter.color);
 
-		this.ctx.lineTo(x, y);
-		this.ctx.stroke();
+		Painter.ctx.lineTo(x, y);
+		Painter.ctx.stroke();
+	}
+
+	protected reDraw()
+	{
+		L.reDraw();
 	}
 
 	protected newLayer()
@@ -117,16 +122,17 @@ class Painter
 	    if (!this.canvas) return;
 		this.isDrawing = true;
 
-        this.ctx.beginPath();
-		this.ctx.lineCap = 'round';
-		this.ctx.lineWidth = this.size;
-		this.ctx.strokeStyle = this.color;
+        Painter.ctx.beginPath();
+		Painter.ctx.lineCap = 'round';
+		Painter.ctx.lineWidth = this.size;
+		Painter.ctx.strokeStyle = Painter.color;
 		const offset = this.canvas.offset();
-		this.ctx.moveTo(e.pageX - offset.left, e.pageY - offset.top);
+		Painter.ctx.moveTo(e.pageX - offset.left, e.pageY - offset.top);
 	}
 
 	protected stopDrawing() : void
 	{
 		this.isDrawing = false;
+		Painter.ctx.closePath();
 	}
 }
