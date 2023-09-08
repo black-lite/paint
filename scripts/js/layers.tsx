@@ -2,10 +2,12 @@ class Layer
 {
 	protected static counter		: number = 0;
 	protected id 					: number;
-	protected zIndex 	: number;
-	protected isActive 	: boolean;
-	protected parent 	: Layers;
-	protected pixels 	: Map<string, string>;
+	protected item 					: JQuery;
+	protected zIndex 				: number;
+	protected isActive 				: boolean;
+	protected isVisible				: boolean;
+	protected parent 				: Layers;
+	protected pixels 				: Map<string, string>;
 
 	constructor(zIndex: number, parent: Layers)
 	{
@@ -13,9 +15,20 @@ class Layer
 		this.parent = parent;
 		this.zIndex = zIndex;
 		this.pixels = new Map();
+
+		this.isActive = false;
+		this.isVisible = true;
+
+		this.item = (<div class="act">
+			{this.id}
+			<span class="zIndex">({this.zIndex})</span>
+			<span class="up">↑</span>
+			<span class="down">↓</span>
+		</div>).appendTo(parent.getContainer());
 	}
 
 	public getID() : number { return this.id; }
+	public getItem() : JQuery { return this.item; }
 	public activate() { this.isActive = true; }
 	public deactivate() { this.isActive = false; }
 
@@ -101,80 +114,170 @@ class Layer
 	}
 }*/
 
+const enum DIRECTION {UP, DOWN}
+
 class Layers
 {
 	protected container 			: JQuery;
-	protected layersStack 			: DataStructure.LinkedList<{id: number, item: JQuery, layer: Layer }>;
+	protected activeLayer 			: Layer;
+	protected layersStack 			: Layer[];
+	// protected layersStack 			: DataStructure.LinkedList<{id: number, item: JQuery, layer: Layer }>;
 	// protected layersStack 			: Map<number, { item: JQuery, layer: Layer }>;
 
 	public constructor()
 	{
-		this.layersStack = new DataStructure.LinkedList();
+		this.layersStack = [];
+		this.activeLayer = null;
 		this.container = $('body > div#layers > div.layers');
 	}
 
-	public getLayersStackSize() : number { return this.layersStack.size(); }
+	public getContainer() : JQuery { return this.container; }
+	public getLayersStackSize() : number { return this.layersStack.length; }
 
 	public create() : Layer
 	{
-		const layer	: Layer = new Layer(this.layersStack.size(), this);
-		const item	: JQuery<HTMLDivElement> = $(<div class="act" draggable="true">{layer.getID()}<span class="zIndex">({layer.getZIndex()})</span><span class="up">↑</span><span class="down">↓</span></div>).prependTo(this.container);
-		this.layersStack.append({id: layer.getID(), item: item, layer: layer });
+		const layer	: Layer = new Layer(this.layersStack.length, this);
+		this.layersStack.push(layer);
 
-		item.on('click', () =>
+		const item = this.layersStack[layer.getZIndex()];
+
+		item.getItem().on('click', () =>
 		{
-			if (item.hasClass('act')) return;
-			this.activateLayer(layer, item);
+			if (this.activeLayer == item) return;
+			this.activateLayer(layer);
+			console.log('activate')
 		})
 
-		item.find('span.up').on('click' , (e) =>
+		item.getItem().find('span.up').on('click' , (e) =>
 		{
 			e.stopPropagation();
 
-			const data = {id: layer.getID(), item: item, layer};
-			const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
-			if (node && node.next)
+			// this.swapLayers(layer.getZIndex(), DIRECTION.UP);
+
+			if (this.layersStack[layer.getZIndex() - 1])
 			{
-				node.next.data.layer.decreaseZIndex();
-				node.next.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
-				node.next.data.item.before(item);
+				const l = this.layersStack[layer.getZIndex()];
+				this.layersStack[layer.getZIndex()] = this.layersStack[layer.getZIndex() - 1];
+				this.layersStack[layer.getZIndex() - 1] = l;
 
-				node.data.layer.increaseZIndex();
-				node.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+				this.layersStack[layer.getZIndex()].increaseZIndex();
+				this.layersStack[layer.getZIndex() - 1].decreaseZIndex();
 
-				console.log(node.data.layer.getZIndex());
+				this.layersStack[layer.getZIndex()].getItem().insertBefore(this.layersStack[layer.getZIndex() + 1].getItem());
+				this.layersStack[layer.getZIndex()].getItem().find('span.zIndex').text(`(${this.layersStack[layer.getZIndex()].getZIndex()})`);
+				this.layersStack[layer.getZIndex() + 1].getItem().find('span.zIndex').text(`(${this.layersStack[layer.getZIndex() + 1].getZIndex()})`);
+
+				console.log('up');
+				console.log(this.layersStack);
 			}
 
+
+			// const data = {id: layer.getID(), item: item, layer};
+			// const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
+			// if (node && node.next)
+			// {
+			// 	node.next.data.layer.decreaseZIndex();
+			// 	node.next.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+			// 	node.next.data.item.before(item);
+			//
+			// 	node.data.layer.increaseZIndex();
+			// 	node.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+			//
+			// 	console.log(node.data.layer.getZIndex());
+			// }
 		});
 
-		item.find('span.down').on('click' , (e) =>
+		item.getItem().find('span.down').on('click' , (e) =>
 		{
 			e.stopPropagation();
+			// this.swapLayers(layer.getZIndex(), DIRECTION.DOWN);
 
-			const data = {id: layer.getID(), item: item, layer};
-			const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
-			if (node && node.prev)
+			if (this.layersStack[layer.getZIndex() + 1])
 			{
-				node.prev.data.layer.increaseZIndex();
-				node.prev.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
-				node.prev.data.item.after(item);
+				const l = this.layersStack[layer.getZIndex()];
+				this.layersStack[layer.getZIndex()] = this.layersStack[layer.getZIndex() + 1];
+				this.layersStack[layer.getZIndex() + 1] = l;
 
-				node.data.layer.decreaseZIndex();
-				node.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+				this.layersStack[layer.getZIndex()].decreaseZIndex();
+				this.layersStack[layer.getZIndex() + 1].increaseZIndex();
 
-				console.log(node.data.layer.getZIndex());
+				this.layersStack[layer.getZIndex()].getItem().insertAfter(this.layersStack[layer.getZIndex() - 1].getItem());
+				this.layersStack[layer.getZIndex()].getItem().find('span.zIndex').text(`(${this.layersStack[layer.getZIndex()].getZIndex()})`);
+				this.layersStack[layer.getZIndex() - 1].getItem().find('span.zIndex').text(`(${this.layersStack[layer.getZIndex() - 1].getZIndex()})`);
+
+				console.log('down');
+				console.log(this.layersStack);
 			}
+
+			// const data = {id: layer.getID(), item: item, layer};
+			// const node = this.layersStack.find(data, (a, b) => JSON.stringify(a.id) === JSON.stringify(b.id));
+			// if (node && node.prev)
+			// {
+			// 	node.prev.data.layer.increaseZIndex();
+			// 	node.prev.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+			// 	node.prev.data.item.after(item);
+			//
+			// 	node.data.layer.decreaseZIndex();
+			// 	node.data.item.find('span.zIndex').text(`(${layer.getZIndex()})`);
+			//
+			// 	console.log(node.data.layer.getZIndex());
+			// }
 		});
 
-		this.activateLayer(layer, item);
+		this.activateLayer(layer);
 		return layer;
 	}
 
-	public activateLayer(layer: Layer, item: JQuery)
+	protected swapLayers(callerZIndex: number, direction: DIRECTION)
 	{
-		this.layersStack.forEach(data => { data.item.removeClass('act'); data.layer.deactivate(); return data; });
-		item.addClass('act');
+		switch (direction)
+		{
+			case DIRECTION.UP:
+			{
+				if (this.layersStack[callerZIndex - 1])
+				{
+					const l = this.layersStack[callerZIndex];
+					this.layersStack[callerZIndex] = this.layersStack[callerZIndex - 1];
+					this.layersStack[callerZIndex - 1] = l;
+
+					this.layersStack[callerZIndex].increaseZIndex();
+					this.layersStack[callerZIndex - 1].decreaseZIndex();
+
+					this.layersStack[callerZIndex].getItem().insertBefore(this.layersStack[callerZIndex + 1].getItem());
+					this.layersStack[callerZIndex].getItem().find('span.zIndex').text(`(${this.layersStack[callerZIndex].getZIndex()})`);
+					this.layersStack[callerZIndex + 1].getItem().find('span.zIndex').text(`(${this.layersStack[callerZIndex + 1].getZIndex()})`);
+				}
+			} break;
+			case DIRECTION.DOWN:
+			{
+				if (this.layersStack[callerZIndex + 1])
+				{
+					const l = this.layersStack[callerZIndex];
+					this.layersStack[callerZIndex] = this.layersStack[callerZIndex + 1];
+					this.layersStack[callerZIndex + 1] = l;
+
+					this.layersStack[callerZIndex].decreaseZIndex();
+					this.layersStack[callerZIndex + 1].increaseZIndex();
+
+					this.layersStack[callerZIndex].getItem().insertAfter(this.layersStack[callerZIndex - 1].getItem());
+					this.layersStack[callerZIndex].getItem().find('span.zIndex').text(`(${this.layersStack[callerZIndex].getZIndex()})`);
+					this.layersStack[callerZIndex - 1].getItem().find('span.zIndex').text(`(${this.layersStack[callerZIndex - 1].getZIndex()})`);
+				}
+			} break;
+		}
+	}
+
+	public activateLayer(layer: Layer)
+	{
+		if (this.activeLayer)
+		{
+			this.activeLayer.deactivate();
+			this.activeLayer.getItem().removeClass('act');
+		}
+
+		this.activeLayer = layer;
 		layer.activate();
+		layer.getItem().addClass('act');
 	}
 }
 

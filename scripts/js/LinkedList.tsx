@@ -121,16 +121,4 @@ namespace DataStructure
 
 		public size() : number { return this._size; }
 	}
-
-	const list = new LinkedList();
-
-	list.append('a');
-	list.append('b');
-	list.append('c');
-	list.append('d');
-	list.append('f');
-
-	console.log(list.toArray());
-	list.forEach(data => data + '***');
-	console.log(list.toArray());
 }
