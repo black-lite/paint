@@ -167,7 +167,7 @@ class Layers
 				this.layersStack[layer.getZIndex()].getItem().find('span.zIndex').text(`(${this.layersStack[layer.getZIndex()].getZIndex()})`);
 				this.layersStack[layer.getZIndex() + 1].getItem().find('span.zIndex').text(`(${this.layersStack[layer.getZIndex() + 1].getZIndex()})`);
 
-				// const target = this.layersStack[layer.getZIndex() + 1];
+				// const target = this.layersStack[layer.getZIndex() - 1];
 				//
 				// this.layersStack[layer.getZIndex()] = target;
 				// this.layersStack[target.getZIndex()] = layer;
