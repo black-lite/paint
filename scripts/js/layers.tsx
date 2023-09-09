@@ -64,6 +64,7 @@ class Layers
 	}
 
 	public getContainer() : JQuery { return this.container; }
+	public getActiveLayer() : Layer { return this.activeLayer; }
 	public getLayersStackSize() : number { return this.layersStack.length; }
 
 	public create() : Layer
@@ -181,61 +182,25 @@ class Layers
 
 	public reDraw()
 	{
-
-		const layer1 = this.layersStack[0];
-		const layer2 = this.layersStack[0];
-
-		Painter.ctx.beginPath();
-		if (layer1.getZIndex() > layer2.getZIndex())
+		Painter.ctx.clearRect(0, 0, Painter.ctx.canvas.width, Painter.ctx.canvas.height)
+		for (const layer of this.layersStack)
 		{
-			for (const [coord, color] of layer1.getPixels())
+			for (const [coord, color] of layer.getPixels())
 			{
 				const arrCoord = coord.split('_');
-				Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1]));
-				Painter.ctx.strokeStyle = color;
-				Painter.ctx.stroke();
-
-				// Painter.ctx.moveTo(Number(arrCoord[0]), Number(arrCoord[1]));
-				Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1])); // линия вправо
-				Painter.ctx.stroke();
-			}
-		}
-		else
-		{
-
-			for (const [coord, color] of layer2.getPixels())
-			{
-				const arrCoord = coord.split('_');
-
-				// Painter.ctx.moveTo(Number(arrCoord[0]), Number(arrCoord[1]));
-				Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1])); // линия вправо
-
-				Painter.ctx.strokeStyle = color;
-				Painter.ctx.stroke();
-
-				// const arrCoord = coord.split('_');
 				// Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1]));
-				// Painter.ctx.strokeStyle = color;
 				// Painter.ctx.stroke();
+
+				Painter.ctx.beginPath();
+
+				Painter.ctx.strokeStyle = color;
+				Painter.ctx.moveTo(Number(arrCoord[0]), Number(arrCoord[1]));
+				Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1])); // линия вправо
+				Painter.ctx.stroke();
+
+				Painter.ctx.closePath();
 			}
-
 		}
-		Painter.ctx.closePath();
-
-		// const arrCoord = layer1..split('_');
-
-		// Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1]));
-		// Painter.ctx.stroke();
-
-		// for (const layer of this.layersStack)
-		// {
-		// 	for (const [coord, color] of layer.getPixels()) {
-		// 		const arrCoord = coord.split('_');
-		//
-		// 		Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1]));
-		// 		Painter.ctx.stroke();
-		// 	}
-		// }
 	}
 
 	public activateLayer(layer: Layer)

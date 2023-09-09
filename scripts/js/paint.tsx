@@ -19,7 +19,7 @@ class Painter
 
 	protected isResize: boolean;
 	protected isDrawing: boolean;
-	protected activeLayer: Layer;
+	// protected activeLayer: Layer;
 
 	public constructor()
 	{
@@ -36,7 +36,10 @@ class Painter
 		this.sizer.css('top', this.canvas.attr('height') + 'px');
 		this.sizer.css('left', this.canvas.attr('width') + 'px');
 
-		this.container.find('#color').on('change', (e) => this.changeColor(String($(e.currentTarget).val())));
+		this.container.find('#color').on('change', (e) => {
+			console.log(String($(e.currentTarget).val()));
+			this.changeColor(String($(e.currentTarget).val()));
+		});
 		this.container.find('#radius').on('change', (e) => this.changeSize(Number($(e.currentTarget).val())));
 		this.container.find('#figures').on('change', (e) => this.changeFigure(Number($(e.currentTarget).val())));
 
@@ -52,8 +55,9 @@ class Painter
 		this.canvas.on('mouseout', () => { if (!this.isDrawing) return; this.stopDrawing()});
 		this.canvas.on('mousemove', (e) => this.draw(e));
 
-		this.activeLayer = L.create();
-		$('body > div#layers > a.add').on('click', () => this.newLayer())
+		L.create();
+		L.create();
+		$('body > div#layers > a.add').on('click', () => L.create());
 	}
 
 	protected changeSize(size: number) 		: void { this.size = size; }
@@ -96,25 +100,21 @@ class Painter
 
 	protected draw(event) : void
 	{
-		if (!this.isDrawing) return;
+		if (L.getActiveLayer() && this.isDrawing)
+		{
+			const x = event.clientX;
+			const y = event.clientY;
 
-		const x = event.clientX;
-		const y = event.clientY;
+			L.getActiveLayer().fillPixel(x, y, Painter.color);
 
-		/*if (!this.activeLayer) */this.activeLayer.fillPixel(x, y, Painter.color);
-
-		Painter.ctx.lineTo(x, y);
-		Painter.ctx.stroke();
+			Painter.ctx.lineTo(x, y);
+			Painter.ctx.stroke();
+		}
 	}
 
 	protected reDraw()
 	{
 		L.reDraw();
-	}
-
-	protected newLayer()
-	{
-		this.activeLayer = L.create();
 	}
 
 	protected startDrawing(e) : void
