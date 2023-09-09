@@ -33,8 +33,8 @@ class Layer
 	public getPixels() 		: Map<string, string> { return this.pixels; }
 	public getIsActive() 	: boolean { return this.isActive; }
 
-	public activate() { this.isActive = true; }
-	public deactivate() { this.isActive = false; }
+	public activate() { this.isActive = true; this.item.addClass('act'); }
+	public deactivate() { this.isActive = false; this.item.removeClass('act'); }
 
 	public increaseZIndex() : number { if ((this.zIndex + 1) >= this.parent.getLayersStackSize()) return this.zIndex; return ++this.zIndex; }
 	public decreaseZIndex() : number { if (this.zIndex == 0) return this.zIndex; return --this.zIndex; }
@@ -195,7 +195,7 @@ class Layers
 
 				Painter.ctx.strokeStyle = color;
 				Painter.ctx.moveTo(Number(arrCoord[0]), Number(arrCoord[1]));
-				Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1])); // линия вправо
+				Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1]));
 				Painter.ctx.stroke();
 
 				Painter.ctx.closePath();
@@ -205,15 +205,9 @@ class Layers
 
 	public activateLayer(layer: Layer)
 	{
-		if (this.activeLayer)
-		{
-			this.activeLayer.deactivate();
-			this.activeLayer.getItem().removeClass('act');
-		}
-
+		if (this.activeLayer) this.activeLayer.deactivate();
 		this.activeLayer = layer;
 		layer.activate();
-		layer.getItem().addClass('act');
 	}
 }
 
