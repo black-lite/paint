@@ -102,6 +102,7 @@ class Painter
 	{
 		if (L.getActiveLayer() && this.isDrawing)
 		{
+			console.log(event);
 			const x = event.clientX;
 			const y = event.clientY;
 
