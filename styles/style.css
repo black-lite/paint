@@ -7,6 +7,10 @@ canvas {
   border: 1px solid black;
 }
 
+div.menu {
+  position: absolute;
+  left: 1000px;
+}
 #size {
   position: absolute;
   background-color: blue;
@@ -57,27 +61,6 @@ canvas {
 #layers > div.layers > div > span.up.down, #layers > div.layers > div > span.down.down {
   top: 50%;
   bottom: 0;
-}
-
-input {
-  position: absolute;
-  top: 0;
-  left: 1000px;
-  display: inline-block;
-  width: 100px;
-  height: 30px;
-}
-input[type=range] {
-  top: 40px;
-}
-
-select {
-  position: absolute;
-  top: 70px;
-  left: 1000px;
-  display: inline-block;
-  width: 100px;
-  height: 30px;
 }
 
 /*# sourceMappingURL=style.css.map */

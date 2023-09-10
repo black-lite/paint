@@ -2,6 +2,15 @@
 
 canvas { border: 1px solid black; }
 
+div.menu {
+	position: absolute; left: 1000px;
+
+	div {
+
+	}
+
+}
+
 #size { position: absolute; background-color: blue; cursor: move; }
 
 #layers {
@@ -30,11 +39,4 @@ canvas { border: 1px solid black; }
 	}
 }
 
-input {
-	position: absolute; top: 0; left: 1000px; display: inline-block; width: 100px; height: 30px;
 
-	&[type="color"] { }
-	&[type="range"] { top: 40px; }
-}
-
-select { position: absolute; top: 70px; left: 1000px; display: inline-block; width: 100px; height: 30px; }
