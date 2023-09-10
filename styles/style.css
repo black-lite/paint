@@ -4,13 +4,34 @@
 }
 
 canvas {
-  border: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 div.menu {
   position: absolute;
-  left: 1000px;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  background-color: rgba(52, 124, 255, 0.48);
+  backdrop-filter: blur(5px);
+  border-radius: 0 0 0 16px;
 }
+div.menu > div {
+  padding: 5px;
+}
+div.menu > div.color > a {
+  border: 1px solid black;
+}
+div.menu > div.brush_size {
+  display: flex;
+  gap: 5px;
+}
+div.menu > div.figure {
+  display: flex;
+  gap: 5px;
+}
+
 #size {
   position: absolute;
   background-color: blue;
@@ -61,6 +82,17 @@ div.menu {
 #layers > div.layers > div > span.up.down, #layers > div.layers > div > span.down.down {
   top: 50%;
   bottom: 0;
+}
+
+a.input_color_skin {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+a.input_color_skin > input {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
 }
 
 /*# sourceMappingURL=style.css.map */

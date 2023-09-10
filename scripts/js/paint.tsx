@@ -27,23 +27,17 @@ class Painter
 
 		this.init();
 
-		Painter.figure = figures.none;
-		Painter.color = $('input#color').val().toString();
+		L.create();
+		L.create();
 
-		L.create();
-		L.create();
 		$('body > div#layers > a.add').on('click', () => L.create());
 	}
 
 	protected init()
 	{
-		this.canvas = this.container.find('canvas');
-		Painter.ctx = this.canvas[0].getContext('2d');
-		this.sizer = this.container.find('#size');
-
 		this.initMenu();
 		this.initCanvas();
-		this.initSizer();
+		// this.initSizer();
 	}
 
 	protected initMenu()
@@ -58,12 +52,17 @@ class Painter
 					<option value="2">круг</option>
 				</select>
 			</div>
-		</div>)
+		</div>);
 	}
 
 	protected initCanvas()
 	{
-		// this.container.find('#color').on('input', (e) => { Painter.color = $(e.currentTarget).val().toString(); });
+		this.canvas = this.container.find('canvas');
+		Painter.ctx = this.canvas[0].getContext('2d');
+
+		Painter.figure = figures.none;
+		Painter.color = $('input#color').val().toString();
+
 		this.container.find('#radius').on('input', (e) => { Painter.size = Number($(e.currentTarget).val()) });
 		this.container.find('#figures').on('input', (e) => { Painter.figure = Number($(e.currentTarget).val()) });
 
@@ -77,6 +76,8 @@ class Painter
 
 	protected initSizer()
 	{
+		this.sizer = this.container.find('#size');
+
 		this.sizer.css('width', WIDTH);
 		this.sizer.css('height', HEIGHT);
 		this.sizer.css('top', this.canvas.height + 'px');
@@ -110,8 +111,6 @@ class Painter
 		this.startPos = { x: event.clientX, y: event.clientY };
 	}
 
-	protected stopResize() : void { this.isResize = false; }
-
 	protected resize(event) : void
 	{
 		if (!this.isResize) return;
@@ -122,6 +121,8 @@ class Painter
 		this.sizer.css('top', this.canvas[0].height + 'px');
 		this.sizer.css('left', this.canvas[0].width + 'px');
 	}
+
+	protected stopResize() : void { this.isResize = false; }
 
 	protected draw(event) : void
 	{

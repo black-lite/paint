@@ -1,12 +1,19 @@
 * { margin: 0; padding: 0; }
 
-canvas { border: 1px solid black; }
+canvas { border-right: 1px solid black; border-bottom: 1px solid black; }
 
 div.menu {
-	position: absolute; left: 1000px;
+	position: absolute; top: 0; right: 0; padding: 5px; background-color: rgb(52 124 255 / 48%);
+	backdrop-filter: blur(5px); border-radius: 0 0 0 16px;
 
-	div {
+	> div {
+		padding: 5px;
 
+		&.color {
+			> a { border: 1px solid black; }
+		}
+		&.brush_size { display: flex; gap: 5px; }
+		&.figure { display: flex; gap: 5px; }
 	}
 
 }
@@ -38,5 +45,7 @@ div.menu {
 		}
 	}
 }
+
+@import "components";
 
 

@@ -46,8 +46,6 @@ class Layer
 	}
 }
 
-const enum DIRECTION {UP, DOWN}
-
 class Layers
 {
 	protected container 			: JQuery;
@@ -188,17 +186,15 @@ class Layers
 			for (const [coord, color] of layer.getPixels())
 			{
 				const arrCoord = coord.split('_');
-				// Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1]));
-				// Painter.ctx.stroke();
 
 				Painter.ctx.beginPath();
 
 				Painter.ctx.strokeStyle = color;
-				Painter.ctx.moveTo(Number(arrCoord[0]), Number(arrCoord[1]));
+				// Painter.ctx.moveTo(Number(arrCoord[0]), Number(arrCoord[1]));
 				Painter.ctx.lineTo(Number(arrCoord[0]), Number(arrCoord[1]));
 				Painter.ctx.stroke();
 
-				Painter.ctx.closePath();
+				// Painter.ctx.closePath();
 			}
 		}
 	}

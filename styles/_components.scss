@@ -1,5 +1,5 @@
 a.input_color_skin {
-	> input { display: none; }
+	> input { opacity: 0; width: 20px; height: 20px; }
 
 	display: inline-block; width: 20px; height: 20px;
 }

@@ -2,16 +2,16 @@ namespace Components
 {
 	export class InputColorSkin
 	{
-		public static Create(inputId: string, callback: (value) => void = null) : InputColorSkin { return new InputColorSkin(inputId, callback) }
+		public static Create(inputID: string, callback: (value) => void = null) : InputColorSkin { return new InputColorSkin(inputID, callback) }
 
 		protected container: JQuery;
 
-		protected inputId: string;
+		protected inputID: string;
 		protected callback: (value) => void;
 
-		public constructor(inputId: string, callback)
+		public constructor(inputID: string, callback)
 		{
-			this.inputId = inputId;
+			this.inputID = inputID;
 			this.callback = callback;
 			this.container = null;
 
@@ -24,7 +24,7 @@ namespace Components
 		protected makeContainer()
 		{
 			this.container = (<a class="input_color_skin">
-				<input type="color" id={this.inputId} value="#0000ff" click={ (e) => e.stopPropagation() }/>
+				<input type="color" id={this.inputID} value="#0000ff" click={ (e) => e.stopPropagation() }/>
 			</a>);
 		}
 
