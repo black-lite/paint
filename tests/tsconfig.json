@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "none",
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "declaration": true,
+    "sourceMap": true,
+    "alwaysStrict": true,
+    "outFile": "test.js",
+    "jsx": "react",
+    "reactNamespace": "Templates"
+  },
+  "include": [
+    "**/*", "templates.ui.d.ts",
+  ],
+  "exclude": ["node_module"]
+}
