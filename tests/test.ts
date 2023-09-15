@@ -23,7 +23,21 @@ $(() => {
 			{
 				ctx.drawImage(image, 0,0, canvas.width(), canvas.height());
 
+				function changeChannel(channel: Channel, value: number)
+				{
+					const imageData: ImageData = ctx.getImageData(0, 0, canvas.width(), canvas.height());
+					switch (channel)
+					{
+						case Channel.R: for (let i = 0; i < imageData.data.length; i += 4) imageData.data[i] = value; break;
+						case Channel.G: for (let i = 0; i < imageData.data.length; i += 4) imageData.data[i+1] = value; break;
+						case Channel.B: for (let i = 0; i < imageData.data.length; i += 4) imageData.data[i+2] = value;	break;
+					}
+					ctx.putImageData(imageData, 0, 0);
+				}
 
+				$('#R').off('input').on('input', (e) => { changeChannel(Channel.R, Number($(e.currentTarget).val())); $(e.currentTarget).parent().find('> span').text($(e.currentTarget).val().toString()) })
+				$('#G').off('input').on('input', (e) => { changeChannel(Channel.G, Number($(e.currentTarget).val())); $(e.currentTarget).parent().find('> span').text($(e.currentTarget).val().toString()) })
+				$('#B').off('input').on('input', (e) => { changeChannel(Channel.B, Number($(e.currentTarget).val())); $(e.currentTarget).parent().find('> span').text($(e.currentTarget).val().toString()) })
 
 				// for (let i = 0; i < imageData.data.length; i += 4)
 				// {
@@ -32,7 +46,7 @@ $(() => {
 				// 	imageData.data[i+1] = greyVersion + 10;
 				// 	imageData.data[i+2] = greyVersion - 100;
 				// }
-				//
+
 				// ctx.putImageData(imageData, 0, 0);
 			}
 
@@ -55,5 +69,6 @@ $(() => {
 		};
 
 		if (file) reader.readAsDataURL(file);
+		fileData.off('change');
 	});
 });
